@@ -1,0 +1,177 @@
+1.	Napisać operację dodawania elementu na końcu listy jednokierunkowej
+
+class Lista {
+    constructor() {
+        this.poczatek = null
+        this.koniec = null
+    }
+    dodajPoczatek(dane) {
+        let nowy = {
+            dane: dane,
+            nast: this.poczatek
+        }
+        if(this.początek == null) //!
+            this.koniec = nowy //!
+        this.poczatek = nowy
+    }
+    usunPoczatek() {
+        let stary = this.poczatek
+        if(stary != null)
+            this.poczatek = stary.nast
+        if(stary.nast == null)
+            this.koniec = null
+        return stary?.dane
+    }
+    dodajKoniec(dane) {
+        let nowy = {
+            dane: dane,
+            nast: null
+        }
+        let stary = this.koniec
+        if(stary == null)
+            this.poczatek = nowy
+        else
+            stary.nast = nowy
+        this.koniec = nowy
+    }
+}
+
+
+
+let lista = new Lista();
+lista.dodajKoniec(5)
+lista.dodajKoniec(3)
+lista.dodajPoczatek(7)
+
+
+2.	Napisać operację dodawania klucza do binarnego drzewa poszukiwań
+
+
+class BST {
+    constructor() {
+        this.korzen = null
+    }
+    dodaj(klucz) {
+        if(this.korzen == null) {
+            this.korzen = {
+                klucz: klucz,
+                lewy: null,
+                prawy: null,
+                rodzic: null    
+            }
+            return
+        }
+        let wezel = this.korzen
+        while(true)
+            if(klucz < wezel.klucz)
+                if(wezel.lewy == null) {
+                    wezel.lewy = {
+                        klucz: klucz,
+                        lewy: null,
+                        prawy: null,
+                        rodzic: wezel
+                    }
+                    return
+                }
+                else
+                    wezel = wezel.lewy
+            else
+                if(wezel.prawy == null) {
+                   wezel.prawy = {
+                        klucz: klucz,
+                        lewy: null,
+                        prawy: null,
+                        rodzic: wezel
+                    }
+                    return
+                }
+                else
+                    wezel = wezel.prawy
+    }
+}
+
+let bst = new BST()
+bst.dodaj(5)
+bst.korzen.klucz
+
+3.	Napisać funkcję przeprowadzającą sortowanie bąbelkowe liczb malejąco na liście lub tablicy (można użyć wbudowanych struktur, nie można używać wbudowanego sortowania)
+
+let arr = [5, 10, 15, 50, 100, 300, 500, 7000]
+
+function bubbleSort(arr) {
+for(let i = 0; i < arr.length; i++) {
+for(let j = 0; j < arr.length - i - 1; j++){
+if(arr[j] < arr[j + 1]) {
+let temp = arr[j + 1];
+arr[j + 1] = arr[j];
+arr [j] = temp;
+}
+}
+}
+return arr;
+}
+
+bubbleSort(arr);
+
+4.	Napisać funkcję sprawdzającą poprawność domknięcia bloków, otwieranych i zamykanych tym samym znakiem zależnie od parzystości (jeśli ostatnim otwieranym blokiem był ten sam, co odpowiada bieżącemu znakowi, to go zamknij; w przeciwnym wypadku go otwórz), oznaczonych znakami:
+
+
+1.	cytatu/cudzysłowu podwójnego - znak  " ,
+2.	cytatu/cudzysłowu pojedynczego - znak  ' ,
+3.	wartości absolutnej - znak pionowej kreski  | ,
+Po zakończeniu przeglądania napisu należy sprawdzić, czy wszystkie bloki zostały domknięte i jeśli nie, to stwierdzić błąd i poinformować o rodzaju niedomkniętych bloków.
+Do realizacji zadania należy wykorzystać stos (wystarczy jeden), pomocniczo można też skorzystać ze słownika/słowników.
+
+
+class Stos {
+    constructor() {
+        this.wierzch = null
+    }
+    poloz(dane) {
+        let nowy = {
+            dane: dane,
+            poprzedni: this.wierzch
+        }
+        this.wierzch = nowy
+    }
+    podejrzyj() {
+        return this.wierzch?.dane
+    }
+    zdejmij() {
+        let stary = this.wierzch
+        if(stary == null)
+            return undefined
+        this.wierzch = stary.poprzedni
+        return stary.dane
+    }
+}
+
+
+let slownik = {
+    '"' : "CudzyslowPodwojny",         // "
+    ''' : "CudzyslowPojedynczy",  // '
+    '|' : "PionowaKreska"         // |
+}
+function walidujcudzyslow(napis) {
+    let stos = new Stos()
+    for(let znak of napis)
+        if(stos.podejrzyj() == undefined){
+            stos.połóż(slownik[znak])
+        }
+        else{
+            if(stos.podejrzyj() == slownik[znak])
+                stos.zdejmij()
+            else
+                stos.połóż(slownik[znak])
+        }
+    if(stos.podejrzyj() == undefined)
+        return true
+    else
+        return false
+}
+
+walidujcudzyslow("`\u0022'|\u0022||\u0022|'\u0022`") //true
+walidujcudzyslow("`\u0022'|\u0022||\u0022|'\u0022") //false
+walidujcudzyslow("`||`'|''|'") //true
+
+
